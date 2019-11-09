@@ -1,35 +1,26 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
+const ApiController = require('./controllers/apiController');
+const ApiService = require('./services/ApiService');
 
-const app = express();
+class App {
 
-let todolist = [];
-
-/* The to do list and the form are displayed */
-app.get('/todo', function(req, res) {
-    res.render('todo.ejs', { todolist, clickHandler:"func1();" });
-})
-
-/* Adding an item to the to do list */
-.post('/todo/add/', urlencodedParser, function(req, res) {
-    if (req.body.newtodo != '') {
-        todolist.push(req.body.newtodo);
+    constructor() {
+        this.express = express();
+        this.controller = new ApiController(this.express, urlencodedParser, [], new ApiService([]));
     }
-    res.redirect('/todo');
-})
 
-/* Deletes an item from the to do list */
-.get('/todo/delete/:id', function(req, res) {
-    if (req.params.id != '') {
-        todolist.splice(req.params.id, 1);
+    main() {
+        this.controller.run();
+
+        this.express.use(function (req, res, next) {
+            res.redirect('/todo');
+        });
+
+        this.express.listen(8080);
     }
-    res.redirect('/todo');
-})
+}
 
-/* Redirects to the to do list if the page requested is not found */
-.use(function(req, res, next){
-    res.redirect('/todo');
-})
-
-.listen(8080);
+let appMain = new App();
+appMain.main();
