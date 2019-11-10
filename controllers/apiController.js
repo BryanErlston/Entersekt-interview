@@ -1,23 +1,36 @@
 class ApiController {
 
-    constructor(app, urlencodedParser, todolist, service) {
+    /**
+     * 
+     * @param {Object} app 
+     * @param {Object} urlencodedParser 
+     * @param {Object} todos 
+     * @param {ApiService} service 
+     */
+    constructor(app, urlencodedParser, todos, service) {
         this.app = app;
         this.urlencodedParser = urlencodedParser;
-        this.todolist = todolist;
+        this.todos = todos;
         this.service = service;
     }
 
+    /**
+     * @description runs and sets up all the endpoints for the api.
+     * 
+     * @public
+     */
     run() {
-
-        
-
         /**
         * @description The to do list and the form are displayed
         */
         this.app.get('/todo', (req, res) => {
-            let todolist = this.todolist;
+            this.todos.find({}, (err, todoListEntity) => {
+                if (err) throw err;
 
-            res.render('todo.ejs', { todolist, clickHandler: "func1();" });
+                let todoList = mapEntityToList(todoListEntity);
+
+                res.render('todo.ejs', { todoList, clickHandler: "func1();" });
+            });
         });
 
         /**
@@ -38,6 +51,28 @@ class ApiController {
             res.redirect('/todo');
         });
     };
+}
+
+/**
+ * @description
+ * 
+ * @private
+ * 
+ * @param {Array} todoList 
+ */
+let mapEntityToList = (todoList) => {
+    let list = [];
+
+    todoList.forEach(todo => {
+        let newTodo = {};
+
+        newTodo.index = todo._id;
+        newTodo.todo = todo.name;
+
+        list.push(newTodo);
+    });
+
+    return list;
 }
 
 module.exports = ApiController;
