@@ -24,11 +24,7 @@ class ApiController {
         * @description The to do list and the form are displayed
         */
         this.app.get('/todo', (req, res) => {
-            this.todos.find({}, (err, todoListEntity) => {
-                if (err) throw err;
-
-                let todoList = mapEntityToList(todoListEntity);
-
+            this.service.getTodos( todoList => {
                 res.render('todo.ejs', { todoList, clickHandler: "func1();" });
             });
         });
@@ -37,42 +33,29 @@ class ApiController {
          * @description Adding an item to the to do list
          */
         this.app.post('/todo/add/', this.urlencodedParser, (req, res) => {
-            this.service.addTodo(req);
-
-            res.redirect('/todo');
+            this.service.addTodo(req, () => {
+                res.redirect('/todo');
+            });
         });
 
         /**
          * @description Deletes an item from the to do list
          */
-        this.app.get('/todo/delete/:id', (req) => {
-            this.service.deleteTodo(req, res);
+        this.app.get('/todo/delete/:id', (req, res) => {
+            this.service.deleteTodo(req, () => {
+                res.redirect('/todo');
+            });
+        });
 
-            res.redirect('/todo');
+        /**
+         * @description Deletes an item from the to do list
+         */
+        this.app.post('/todo/update/:id', this.urlencodedParser, (req, res) => {
+            this.service.updateTodo(req, () => {
+                res.redirect('/todo');
+            });
         });
     };
-}
-
-/**
- * @description
- * 
- * @private
- * 
- * @param {Array} todoList 
- */
-let mapEntityToList = (todoList) => {
-    let list = [];
-
-    todoList.forEach(todo => {
-        let newTodo = {};
-
-        newTodo.index = todo._id;
-        newTodo.todo = todo.name;
-
-        list.push(newTodo);
-    });
-
-    return list;
 }
 
 module.exports = ApiController;

@@ -1,27 +1,49 @@
 <!DOCTYPE html>
 
 <html>
-    <head>
-        <title>My todolist</title>
-        <style>
-            a {text-decoration: none; color: black;}
-        </style>
-    </head>
 
-    <body>
-        <h1>My todolist</h1>
-        <ul>
-        <% todolist.forEach(function(todo, index) { %>
-            <li><a href="/todo/delete/<%= index %>">✘</a> <%- todo %></li>
-        <% }); %>
-        </ul>
+<head>
+    <title>My todolist</title>
+    <style>
+        a {
+            text-decoration: none;
+            color: black;
+        }
+    </style>
+</head>
 
-        <form action="/todo/add/" method="post">
-            <p>
-                <label for="newtodo">What shoud I do?</label>
-                <input type="text" name="newtodo" id="newtodo" autofocus />
-                <input type="submit" />
-            </p>
-        </form>
-    </body>
+<body>
+    <h1>My todolist</h1>
+    <ul>
+        <% todoList.forEach(function(todo) { %>
+            <li id="normal-field-<%= todo.id %>">
+                <a href="/todo/delete/<%= todo.id %>">✘</a>
+                <%- todo.name %>&nbsp;
+                    <button onclick="edit('<%= todo.id %>')">Edit</button>
+            </li>
+            <li id="edit-field-<%= todo.id %>" style="display: none;">
+                <a href="/todo/delete/<%= todo.id %>">✘</a>
+                <form action="/todo/update/<%= todo.id %>" method="post" style="display: inline;">
+                    <input type="text" name="updatedTodo" id="updatedTodo" value="<%= todo.name %>" autofocus />&nbsp;
+                    <input type="submit" value="Save"/>
+                </form>
+            </li>
+            <% }); %>
+    </ul>
+
+    <form action="/todo/add/" method="post">
+        <p>
+            <label for="newtodo">What shoud I do?</label>
+            <input type="text" name="newtodo" id="newtodo" autofocus />
+            <input type="submit" />
+        </p>
+    </form>
+</body>
+<script>
+    function edit(id) {
+        document.getElementById("normal-field-" + id).style.display = "none";
+        document.getElementById("edit-field-" + id).style.display = "block";
+    }
+</script>
+
 </html>

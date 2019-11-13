@@ -11,7 +11,7 @@ class App {
 
     constructor() {
         this.express = express();
-        this.controller = new ApiController(this.express, urlencodedParser, Todos, new ApiService([]));
+        this.controller = new ApiController(this.express, urlencodedParser, Todos, new ApiService(Todos));
     }
 
     /**
@@ -24,11 +24,11 @@ class App {
 
         this.controller.run();
 
-        this.express.use(function (req, res, next) {
+        this.express.use( (req, res, next) => {
             res.redirect('/todo');
         });
 
-        this.express.listen(8080);
+        this.express.listen(process.env.port || 3000);
     }
 }
 

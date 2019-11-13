@@ -8,7 +8,8 @@
     "mongoose": "^5.7.8"
   },
   "scripts": {
-    "test": "nyc --reporter=text mocha"
+    "test": "nyc --reporter=text mocha",
+    "start": "node app.js"
   },
   "author": "riaan@entersekt.com",
   "description": "Basic to do list exercise",

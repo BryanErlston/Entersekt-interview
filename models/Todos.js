@@ -3,10 +3,9 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 var todoSchema = new Schema({
-    name: String,
-    checked: Boolean
+    name: String
 });
 
-var Todos = mongoose.model("Todos", todoSchema);
+var Todos = mongoose.model("todos", todoSchema);
 
 module.exports = Todos;
